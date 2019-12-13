@@ -15,9 +15,9 @@ import {
 } from 'fs';
 import rimraf from 'rimraf';
 import { parse } from '@babel/parser';
-import { parseComponent } from 'vue-template-compiler';
 import babelTraverse from '@babel/traverse';
-import generate from 'babel-generator';
+import generate from '@babel/generator';
+import { parseComponent } from 'vue-template-compiler';
 import {
   isJSXClosingElement,
   isJSXOpeningElement,
