@@ -9,6 +9,11 @@
     "deploy": "npm version patch && npm publish && tnpm sync"
   },
   "author": "zhaozeqing<zhaozeq@foxmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhaozeq/vue-to-react"
+  },
+  "keywords": ["node", "vue-to-react", "ast"],
   "dependencies": {
     "@babel/runtime": "7.4.5",
     "@babel/traverse": "^7.6.3",
