@@ -1,0 +1,49 @@
+{
+  "name": "@zus/vue-to-react",
+  "version": "0.0.1-alpha",
+  "description": "transform Vue Components to React",
+  "main": "lib/index.js",
+  "scripts": {
+    "demo": "BABEL_DISABLE_CACHE=1 node src/debug.js",
+    "build": "BABEL_DISABLE_CACHE=1 node scripts/build.js",
+    "deploy": "npm version patch && npm publish && tnpm sync"
+  },
+  "author": "zhaozeqing<zhaozeq@foxmail.com>",
+  "dependencies": {
+    "@babel/runtime": "7.4.5",
+    "@babel/traverse": "^7.6.3",
+    "chalk": "^3.0.0",
+    "inquirer": "6.3.1",
+    "prettier": "^1.18.2",
+    "rimraf": "^2.7.1",
+    "update-notifier": "^3.0.1",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "devDependencies": {
+    "@babel/core": "7.4.5",
+    "@babel/parser": "^7.6.4",
+    "@babel/plugin-proposal-class-properties": "7.4.4",
+    "@babel/plugin-proposal-do-expressions": "7.2.0",
+    "@babel/plugin-proposal-export-default-from": "7.2.0",
+    "@babel/plugin-transform-runtime": "7.4.4",
+    "@babel/preset-env": "7.4.5",
+    "@babel/register": "^7.7.4",
+    "@babel/traverse": "^7.6.3",
+    "babel-generator": "^6.26.1",
+    "through2": "3.0.1",
+    "vinyl-fs": "3.0.3"
+  },
+  "bin": {
+    "convert": "bin/index.js"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "sourceMaps": true,
+    "retainLines": true
+  }
+}
