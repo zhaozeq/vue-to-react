@@ -1,12 +1,12 @@
 # readme
 
-## vue-to-react
+## convert-vue-to-react
 
 ### Getting started
 
 ```bash
 ## usage
-$ sudo tnpm install @zus/vue-to-react -g
+$ sudo tnpm install convert-vue-to-react -g
 
 ## create your project
 ## convert 待转换文件路径 可转换文件夹或者单个文件

@@ -1,5 +1,5 @@
 {
-  "name": "@zus/vue-to-react",
+  "name": "convert-vue-to-react",
   "version": "0.0.1-alpha",
   "description": "transform Vue Components to React",
   "main": "lib/index.js",
