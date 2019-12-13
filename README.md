@@ -41,8 +41,8 @@ $ convert --help
 -  style => index.(css | stylus | sass | less) (目前考虑)
 -  移除ts type功能
 - this.$refs
-- v-for v-if v-show 同时存在的情况
-- 
+- v-for v-if v-show 已考虑同时存在的情况但是官方并不推荐这种写法哦 [vue风格指南][1]
+- slot 组件
 --------
 #### 仍需要处理
 - v-on: 事件修饰符：
@@ -54,6 +54,7 @@ $ convert --help
   * .passive
 - v-bind.sync="doc" => 暂不支持用对象设置多个props
 - watch
+- vue 自带组件如 transition
 - 指令表达式 暂不支持 模板字符串的情况
 - Vux / vue-router(目前需求是组件、模块的转换，无需，看后续需求在考虑)
 - 。。。
@@ -61,3 +62,4 @@ $ convert --help
 目前是对我们的一个vue组件库进行转换，不过实际的代码情况会更加复杂，开发同学的编码习惯差别也很大，还需要针对各种情况详细处理。同时此方案也可以运用于小程序代码互转等场景中，所以我认为学写一下还是不错的，对代码编译的过程能更加深入了解
 
 
+[1]: https://cn.vuejs.org/v2/style-guide/
