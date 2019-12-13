@@ -1,12 +1,12 @@
 # readme
 
-## vueToreact
+## vue-to-react-tool
 
 ### Getting started
 
 ```bash
 ## usage
-$ sudo tnpm install vueToreact -g
+$ sudo tnpm install vue-to-react-tool -g
 
 ## convert
 $ convert components/test.vue -o components
