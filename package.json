@@ -13,6 +13,7 @@
     "type": "git",
     "url": "https://github.com/zhaozeq/vue-to-react"
   },
+  "license": "MIT",
   "keywords": [
     "node",
     "vue-to-react",
