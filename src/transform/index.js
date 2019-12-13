@@ -98,7 +98,7 @@ function transform(input, output, isTs = true) {
     try {
       solveSingleFile(input, output, { isTs });
     } catch (error) {
-      log(`Transform failed!! \n`);
+      log(`   Transform failed!! \n`);
       log(error);
       rimraf.sync(output);
     }
@@ -114,7 +114,7 @@ function transform(input, output, isTs = true) {
     console.log('\n   Transform failed list:');
     failedList.map(o => log(`   ${o}`));
   } else {
-    log(`Transform completed!!`, 'success');
+    log(`   Transform completed!!`, 'success');
   }
 }
 
@@ -149,7 +149,7 @@ function transformDir(input, output, options = {}, failedList) {
         transformDir(from, to, { isTs, extra }, failedList);
       } else if (temp.isFile()) {
         try {
-          log(`Transforming ${from.replace(process.cwd(), '')}`);
+          console.log(`Transforming ${from.replace(process.cwd(), '')}`);
           solveSingleFile(from, to, { isTs });
         } catch (error) {
           log(error);
