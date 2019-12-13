@@ -56,6 +56,7 @@ switch (command) {
     console.log(version);
     break;
   case '-h':
+  case '--help':
     helper();
     break;
   default:
