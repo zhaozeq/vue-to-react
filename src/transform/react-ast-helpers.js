@@ -1,4 +1,4 @@
-const t = require('babel-types');
+const t = require('@babel/types');
 const chalk = require('chalk');
 
 const { genDefaultProps, genPropTypes } = require('./utils');

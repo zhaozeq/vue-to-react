@@ -1,4 +1,4 @@
-const t = require('babel-types');
+const t = require('@babel/types');
 const { log, getIdentifier, getStateOrProp, camelName } = require('./utils');
 
 const nestedMethodsVisitor = {

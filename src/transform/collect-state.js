@@ -1,5 +1,5 @@
 const babelTraverse = require('@babel/traverse').default;
-const t = require('babel-types');
+const t = require('@babel/types');
 
 const { log } = require('./utils');
 const collectVueProps = require('./vue-props');
