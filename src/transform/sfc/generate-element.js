@@ -57,9 +57,10 @@ function solveClass(attrs, state) {
 
 /**
  * 属性赋值
- * @param {*} attrList
+ * @param {String} tagName 标签名
+ * @param {Array} attrList 属性列表 {k:v}
  */
-function handleAttrValue(attrList, state, child) {
+function handleAttrValue(tagName, attrList, state, child) {
   const [attrs, _attrs] = solveClass(attrList, state); // 处理class属性
   const hasforCycle = attrs.some(({ key }) => key === 'v-for');
   attrs.map(({ key, value }) => {
@@ -103,6 +104,29 @@ function handleAttrValue(attrList, state, child) {
         );
         _attrs.push(t.jsxAttribute(_var, _val));
       }
+    } else if (key === 'v-model') {
+      // 改为value = xxx onInput={e => this.setState({xxx:e.target.value|checked})}
+      const varible = t.JSXIdentifier('value');
+      const attrVal = t.jSXExpressionContainer(
+        t.identifier(`this.state[${value}]`)
+      );
+      _attrs.push(t.jsxAttribute(varible, attrVal));
+
+      // 处理onInput
+      const inputKey = t.JSXIdentifier('onInput');
+      const _varible =
+        tagName === 'input' &&
+        attrs.some(({ key, value }) => key === 'type' && value === 'checkbox')
+          ? t.identifier('e.target.checked')
+          : t.identifier('e.target.value');
+      const _block = t.callExpression(
+        t.memberExpression(t.thisExpression(), t.identifier('setState')),
+        [t.objectExpression([t.objectProperty(t.identifier(value), _varible)])]
+      );
+      const _val = t.jSXExpressionContainer(
+        t.arrowFunctionExpression([t.identifier('e')], _block)
+      );
+      _attrs.push(t.jsxAttribute(inputKey, _val));
     } else if (key === 'v-text') {
       const content = t.jsxExpressionContainer(handleExpression(state, value));
       child.push(content);
@@ -160,7 +184,7 @@ function generateOneEle(ast, state) {
 
   const openingElement = t.jsxOpeningElement(
     t.JSXIdentifier(parseName(ast.tag)),
-    handleAttrValue(attrs, state, child),
+    handleAttrValue(ast.tag, attrs, state, child),
     false
   );
   const closeElement = t.jsxClosingElement(t.JSXIdentifier(parseName(ast.tag)));

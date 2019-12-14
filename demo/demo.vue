@@ -12,6 +12,8 @@
         <span>{{ msg }}</span>
       </li>
     </ul>
+    <input v-model="text" />
+    <input type="checkbox" v-model="checked" />
     <span v-text="text"></span>
     <div v-html="html"></div>
     <to-do v-bind:msg="msg" v-bind:list="list"></to-do>
@@ -39,6 +41,7 @@ export default {
       list: [1, 2, 3],
       html: '<div>1111<span>222</span>333<p>ssssss</p></div>',
       error: false,
+      checked:false,
       time: now
     };
   },

@@ -91,7 +91,7 @@ function transform(input, output, isTs = true) {
   if (statSync(input).isFile()) output = output + '.js';
   if (existsSync(output)) {
     log('当前路径存在同名文件！,请重试');
-    process.exit();
+    // process.exit();
   }
   if (statSync(input).isFile()) {
     // 单个文件时
@@ -202,7 +202,6 @@ function solveSingleFile(from, to, opt) {
   const component = formatContent(fileContent.toString());
 
   /* solve styles */
-
   const styles = component.styles;
   let suffixName = '';
   if (styles && styles[0]) {
