@@ -106,7 +106,7 @@ function transform(input, output, isTs = true) {
     transformDir(
       input,
       output,
-      { isTs, extra: /node_modules|\.ts$/ },
+      { isTs, extra: /node_modules/ },
       failedList
     );
   }
