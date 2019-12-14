@@ -1,6 +1,6 @@
 import { dirname, resolve } from 'path';
 import helper from './doc/helper';
-import trans from './transform';
+import transform from './transform';
 import chalk from 'chalk';
 
 process.env.HOME_DIR = dirname(require.resolve('../package'));
@@ -49,7 +49,9 @@ const command = process.argv[2];
 const args = process.argv.slice(3);
 const version = pkg.version;
 const outputIndex = args.findIndex(o => o === '-o' || o === '--output');
-const isTsType = args.includes('-t') || args.includes('--ts');
+const extraIndex = args.findIndex(o => o === '-i' || o === '--ignore');
+const isTs = args.includes('-t') || args.includes('--ts');
+
 switch (command) {
   case '-v':
   case '--version':
@@ -64,10 +66,14 @@ switch (command) {
     else {
       const input = resolve(process.cwd(), command);
       const output =
-        outputIndex && args[outputIndex + 1]
+        outputIndex > -1 && args[outputIndex + 1]
           ? resolve(process.cwd(), args[outputIndex + 1])
           : resolve(process.cwd(), 'react__from__vue');
-      trans(input, output, isTsType);
+      const extra =
+        extraIndex > -1 && args[extraIndex + 1]
+          ? args[extraIndex + 1].split(',')
+          : [];
+      transform(input, output, { isTs, extra });
     }
     break;
 }
