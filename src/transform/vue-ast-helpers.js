@@ -106,11 +106,9 @@ function createClassMethod(path, state, name) {
     params = [t.identifier('error'), t.identifier('info')];
   }
   path.traverse(nestedMethodsVisitor, { blocks, state });
-  return t.classMethod(
-    'method',
+  return t.classProperty(
     t.identifier(name),
-    params,
-    t.blockStatement(body.body)
+    t.arrowFunctionExpression(params, t.blockStatement(body.body))
   );
 }
 
