@@ -6,7 +6,7 @@ const input = resolve(process.cwd(), 'demo/demo.vue');
 const output = resolve(process.cwd(), 'demo/react');
 const options = {
   isTs: true,
-  cssModule: false
+  cssModule: true
 };
 process.options = options;
 trans(input, output, { isTs: true });

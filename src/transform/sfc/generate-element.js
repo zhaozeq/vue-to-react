@@ -19,24 +19,33 @@ function solveClass(attrs, state) {
     // 模板字符串
     const classItem = attrs.find(o => o.key === 'class');
     const vClassItem = attrs.find(o => o.key === 'v-bind:class');
-    attrVal = t.jSXExpressionContainer(
-      t.templateLiteral(
-        [
+    const templateElements = isUseCssModule
+      ? [
           t.templateElement({ raw: '', cooked: '' }),
           t.templateElement({ raw: ' ', cooked: ' ' }),
           t.templateElement({ raw: '', cooked: '' }, true)
-        ],
-        [
-          isUseCssModule
-            ? t.memberExpression(
-                t.identifier('styles'),
-                t.stringLiteral(classItem.value),
-                true
-              )
-            : t.stringLiteral(classItem.value),
+        ]
+      : [
+          t.templateElement({
+            raw: `${classItem.value} `,
+            cooked: `${classItem.value} `
+          }),
+          t.templateElement({ raw: '', cooked: '' }, true)
+        ];
+
+    const expressions = isUseCssModule
+      ? [
+          t.memberExpression(
+            t.identifier('styles'),
+            t.stringLiteral(classItem.value),
+            true
+          ),
           handleExpression(state, vClassItem.value)
         ]
-      )
+      : [handleExpression(state, vClassItem.value)];
+
+    attrVal = t.jSXExpressionContainer(
+      t.templateLiteral(templateElements, expressions)
     );
   } else if (hasClass) {
     const { value } = attrs.find(o => o.key === 'class');
