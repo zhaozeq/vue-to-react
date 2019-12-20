@@ -13,39 +13,48 @@ function solveClass(attrs, state) {
   const hasClass = attrs.some(({ key }) => key === 'class');
   const hasVclass = attrs.some(({ key }) => key === 'v-bind:class');
   const varible = t.JSXIdentifier('className');
+  const isUseCssModule = process.options.cssModule;
   let attrVal;
   if (hasClass && hasVclass) {
     // 模板字符串
     const classItem = attrs.find(o => o.key === 'class');
     const vClassItem = attrs.find(o => o.key === 'v-bind:class');
-    attrVal = t.templateLiteral(
-      [
-        t.templateElement({ raw: '', cooked: '' }),
-        t.templateElement({ raw: ' ', cooked: ' ' }),
-        t.templateElement({ raw: '', cooked: '' }, true)
-      ],
-      [
-        t.memberExpression(
-          t.identifier('styles'),
-          t.stringLiteral(classItem.value),
-          true
-        ),
-        handleExpression(state, vClassItem.value)
-      ]
+    attrVal = t.jSXExpressionContainer(
+      t.templateLiteral(
+        [
+          t.templateElement({ raw: '', cooked: '' }),
+          t.templateElement({ raw: ' ', cooked: ' ' }),
+          t.templateElement({ raw: '', cooked: '' }, true)
+        ],
+        [
+          isUseCssModule
+            ? t.memberExpression(
+                t.identifier('styles'),
+                t.stringLiteral(classItem.value),
+                true
+              )
+            : t.stringLiteral(classItem.value),
+          handleExpression(state, vClassItem.value)
+        ]
+      )
     );
   } else if (hasClass) {
     const { value } = attrs.find(o => o.key === 'class');
-    attrVal = t.memberExpression(
-      t.identifier('styles'),
-      t.stringLiteral(value),
-      true
-    );
+    attrVal = isUseCssModule
+      ? t.jSXExpressionContainer(
+          t.memberExpression(
+            t.identifier('styles'),
+            t.stringLiteral(value),
+            true
+          )
+        )
+      : t.stringLiteral(value);
   } else if (hasVclass) {
     const { value } = attrs.find(o => o.key === 'v-bind:class');
-    attrVal = handleExpression(state, value);
+    attrVal = t.jSXExpressionContainer(handleExpression(state, value));
   }
   if (hasClass || hasVclass) {
-    _attrs.push(t.jsxAttribute(varible, t.jSXExpressionContainer(attrVal)));
+    _attrs.push(t.jsxAttribute(varible, attrVal));
     return [
       attrs.filter(({ key }) => key !== 'class' && key !== 'v-bind:class'),
       _attrs
@@ -108,7 +117,10 @@ function handleAttrValue(tagName, attrList, state, child) {
       // 改为value = xxx onInput={e => this.setState({xxx:e.target.value|checked})}
       const varible = t.JSXIdentifier('value');
       const attrVal = t.jSXExpressionContainer(
-        t.identifier(`this.state[${value}]`)
+        t.memberExpression(
+          t.memberExpression(t.thisExpression(), t.identifier('state')),
+          t.identifier(value)
+        )
       );
       _attrs.push(t.jsxAttribute(varible, attrVal));
 

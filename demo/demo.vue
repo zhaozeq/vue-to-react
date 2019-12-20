@@ -47,7 +47,7 @@ export default {
   },
 
   computed: {
-    text() {
+    test() {
       console.log('from computed', this.msg);
       return `${this.time}: ${this.html}`;
     }

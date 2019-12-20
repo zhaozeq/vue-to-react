@@ -18,6 +18,15 @@ export default function(ast) {
         exportPath.remove();
       }
     },
+    TSTypeAliasDeclaration(path) {
+      path.remove();
+    },
+    TSTypeParameterDeclaration(path) {
+      path.remove();
+    },
+    TSInterfaceDeclaration(path) {
+      path.remove();
+    },
     TSTypeParameterInstantiation(path) {
       path.remove();
     },

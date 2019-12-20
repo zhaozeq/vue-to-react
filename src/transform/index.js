@@ -182,10 +182,29 @@ function solveSingleFile(from, to, opt, failedList) {
   // 读取文件
   const { isTs } = opt;
   const isVue = /\.vue$/.test(from);
-
+  const isTsFile = /\.ts$/.test(from);
   if (!isVue) {
-    copyFileSync(from, to);
-    return;
+    if (isTsFile && isTs) {
+      // 处理 ts或者js文件 去除type
+      let ast = parse(readFileSync(from).toString(), {
+        sourceType: 'module',
+        strictMode: false,
+        plugins
+      });
+      transformTS(ast);
+      const { code } = generate(ast, {
+        quotes: 'single',
+        retainLines: true
+      });
+      outputFile(
+        code,
+        to.replace(/(.*).ts$/, (match, o) => o + '.js')
+      );
+      return;
+    } else {
+      copyFileSync(from, to);
+      return;
+    }
   }
 
   let fileContent = readFileSync(from);
@@ -193,9 +212,10 @@ function solveSingleFile(from, to, opt, failedList) {
 
   /* solve styles */
   const styles = component.styles;
-  let suffixName = '';
+  let suffixName = null;
   let cssRoute = null;
-  if (styles && styles[0]) {
+  const isUseCssModule = process.options.cssModule;
+  if (isUseCssModule && styles && styles[0]) {
     const style = styles[0];
     const route = to.split('/');
     route.pop();

@@ -51,8 +51,9 @@ export function handleExpression(state, value) {
             // 可能本身就是字符串  '' "" 模板字符串等会有漏洞 那又何妨
             return match;
           } else if (state.$refs[_val]) return `this.${match}`;
+          else if (state.computeds[_val]) return `${match}()`;
+          else if (state.vForVars[_val]) return match;
           else if (state.data[_val]) return `this.state.${match}`;
-          else if (state.computeds[_val] || state.vForVars[_val]) return match;
           else return `this.props.${match}`;
         }
       );
@@ -69,11 +70,12 @@ export function handleExpression(state, value) {
           ((value[index - 1] === "'" && value[index + match.length] === "'") ||
             (value[index - 1] === '"' && value[index + match.length] === '"'))
         ) {
-          // 可能本身就是字符串  '' "" 模板字符串等会有漏洞 那又何妨
+          // 可能本身就是字符串  '' "" 模板字符串等会有漏洞
           return match;
         } else if (state.$refs[_val]) return `this.${match}`;
+        else if (state.computeds[_val]) return `${match}()`;
         else if (state.data[_val]) return `this.state.${match}`;
-        else if (state.computeds[_val] || state.vForVars[_val]) return match;
+          else if (state.vForVars[_val]) return match;
         else return `this.props.${match}`;
       }
     );

@@ -12,12 +12,14 @@ export function genImports(path, collect, cssSuffixName) {
     ],
     t.stringLiteral('react')
   );
-  const importCss = t.importDeclaration(
-    [t.importDefaultSpecifier(t.identifier('styles'))],
-    t.stringLiteral(`./${cssSuffixName}`)
-  );
+  if (cssSuffixName) {
+    const importCss = t.importDeclaration(
+      [t.importDefaultSpecifier(t.identifier('styles'))],
+      t.stringLiteral(`./${cssSuffixName}`)
+    );
+    collect.imports.unshift(importCss);
+  }
   collect.imports.push(importReact);
-  collect.imports.unshift(importCss);
 
   collect.imports.forEach(node => nodeLists.unshift(node));
 }

@@ -51,6 +51,7 @@ const version = pkg.version;
 const outputIndex = args.findIndex(o => o === '-o' || o === '--output');
 const extraIndex = args.findIndex(o => o === '-i' || o === '--ignore');
 const isTs = args.includes('-t') || args.includes('--ts');
+const cssModule = args.includes('-m') || args.includes('--module'); //  是否模块化css styles[...]
 
 switch (command) {
   case '-v':
@@ -73,7 +74,13 @@ switch (command) {
         extraIndex > -1 && args[extraIndex + 1]
           ? args[extraIndex + 1].split(',')
           : [];
-      transform(input, output, { isTs, extra });
+      const options = {
+        isTs,
+        cssModule,
+        extra
+      };
+      process.options = options;
+      transform(input, output, options);
     }
     break;
 }
