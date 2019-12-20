@@ -12,9 +12,15 @@ $ sudo tnpm install vue-to-react-tool -g
 $ convert components/test.vue -o components
 $ convert components -o components
 
-## help
-$ convert --help
-```
+## options
+Usage: trans [targetPath] [options]
+Options:
+	-v, --version  output current version
+	-o, --output   the output path for react component, default is process.cwd()/react__from__vue
+	-i, --ignore   fileName or just RegExp => .ts$,ignoreFile.js,ignoreDir  default: node_modules
+	-m, --module   use cssModule(styles.***),default is global mode(\"class-name\")
+	-t, --ts       it is a typescript component
+	-h, --help     output usage information
 
 ### 说明
 #### 目前已成功转换:
