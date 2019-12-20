@@ -99,8 +99,8 @@ const nestedMethodsVisitor = {
 
 function createClassMethod(path, state, name) {
   const body = path.node.body;
+  let params = path.node.params;
   const blocks = [];
-  let params = [];
 
   if (name === 'componentDidCatch') {
     params = [t.identifier('error'), t.identifier('info')];
