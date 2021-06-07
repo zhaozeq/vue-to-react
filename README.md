@@ -9,8 +9,8 @@
 $ sudo tnpm install vue-to-react-tool -g
 
 ## convert
-$ convert components/test.vue -o components
-$ convert components -o components
+$ convert components/test.vue -o components  // file
+$ convert components -o components  // dir
 
 ## options
 Usage: trans [targetPath] [options]
