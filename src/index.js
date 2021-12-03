@@ -1,7 +1,9 @@
 import { dirname, resolve } from 'path';
 import helper from './doc/helper';
-import transform from './transform';
+import transform, { transformContent } from './transform';
 import chalk from 'chalk';
+
+export default transformContent;
 
 process.env.HOME_DIR = dirname(require.resolve('../package'));
 
@@ -37,11 +39,9 @@ if (notifier.update && notifier.update.latest !== pkg.version) {
       break;
   }
   notifier.notify({
-    message: `New ${type} version of ${pkg.name} available! ${chalk.red(
-      old
-    )} -> ${chalk.green(latest)}\nRun ${chalk.green(
+    message: `New ${type} version of ${pkg.name} available! ${chalk.red(old)} -> ${chalk.green(latest)}\nRun ${chalk.green(
       `npm install -g ${pkg.name}`
-    )} to update!`
+    )} to update!`,
   });
 }
 
@@ -67,17 +67,12 @@ switch (command) {
     else {
       const input = resolve(process.cwd(), command);
       const output =
-        outputIndex > -1 && args[outputIndex + 1]
-          ? resolve(process.cwd(), args[outputIndex + 1])
-          : resolve(process.cwd(), 'react__from__vue');
-      const extra =
-        extraIndex > -1 && args[extraIndex + 1]
-          ? args[extraIndex + 1].split(',')
-          : [];
+        outputIndex > -1 && args[outputIndex + 1] ? resolve(process.cwd(), args[outputIndex + 1]) : resolve(process.cwd(), 'react__from__vue');
+      const extra = extraIndex > -1 && args[extraIndex + 1] ? args[extraIndex + 1].split(',') : [];
       const options = {
         isTs,
         cssModule,
-        extra
+        extra,
       };
       process.options = options;
       transform(input, output, options);

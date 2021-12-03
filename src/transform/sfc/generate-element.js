@@ -1,11 +1,6 @@
 import * as t from '@babel/types';
 import { parseName, camelName } from '../utils';
-import {
-  handleAttribution,
-  handleExpression,
-  handleOnDirective,
-  handleForDirective
-} from './directives';
+import { handleAttribution, handleExpression, handleOnDirective, handleForDirective } from './directives';
 
 // class => className
 function solveClass(attrs, state) {
@@ -13,50 +8,31 @@ function solveClass(attrs, state) {
   const hasClass = attrs.some(({ key }) => key === 'class');
   const hasVclass = attrs.some(({ key }) => key === 'v-bind:class');
   const varible = t.JSXIdentifier('className');
-  const isUseCssModule = process.options.cssModule;
+  const isUseCssModule = process.options ? process.options.cssModule : true;
   let attrVal;
   if (hasClass && hasVclass) {
     // 模板字符串
     const classItem = attrs.find(o => o.key === 'class');
     const vClassItem = attrs.find(o => o.key === 'v-bind:class');
     const templateElements = isUseCssModule
-      ? [
-          t.templateElement({ raw: '', cooked: '' }),
-          t.templateElement({ raw: ' ', cooked: ' ' }),
-          t.templateElement({ raw: '', cooked: '' }, true)
-        ]
+      ? [t.templateElement({ raw: '', cooked: '' }), t.templateElement({ raw: ' ', cooked: ' ' }), t.templateElement({ raw: '', cooked: '' }, true)]
       : [
           t.templateElement({
             raw: `${classItem.value} `,
-            cooked: `${classItem.value} `
+            cooked: `${classItem.value} `,
           }),
-          t.templateElement({ raw: '', cooked: '' }, true)
+          t.templateElement({ raw: '', cooked: '' }, true),
         ];
 
     const expressions = isUseCssModule
-      ? [
-          t.memberExpression(
-            t.identifier('styles'),
-            t.stringLiteral(classItem.value),
-            true
-          ),
-          handleExpression(state, vClassItem.value)
-        ]
+      ? [t.memberExpression(t.identifier('styles'), t.stringLiteral(classItem.value), true), handleExpression(state, vClassItem.value)]
       : [handleExpression(state, vClassItem.value)];
 
-    attrVal = t.jSXExpressionContainer(
-      t.templateLiteral(templateElements, expressions)
-    );
+    attrVal = t.jSXExpressionContainer(t.templateLiteral(templateElements, expressions));
   } else if (hasClass) {
     const { value } = attrs.find(o => o.key === 'class');
     attrVal = isUseCssModule
-      ? t.jSXExpressionContainer(
-          t.memberExpression(
-            t.identifier('styles'),
-            t.stringLiteral(value),
-            true
-          )
-        )
+      ? t.jSXExpressionContainer(t.memberExpression(t.identifier('styles'), t.stringLiteral(value), true))
       : t.stringLiteral(value);
   } else if (hasVclass) {
     const { value } = attrs.find(o => o.key === 'v-bind:class');
@@ -64,10 +40,7 @@ function solveClass(attrs, state) {
   }
   if (hasClass || hasVclass) {
     _attrs.push(t.jsxAttribute(varible, attrVal));
-    return [
-      attrs.filter(({ key }) => key !== 'class' && key !== 'v-bind:class'),
-      _attrs
-    ];
+    return [attrs.filter(({ key }) => key !== 'class' && key !== 'v-bind:class'), _attrs];
   } else {
     return [attrs, _attrs];
   }
@@ -109,58 +82,37 @@ function handleAttrValue(tagName, attrList, state, child) {
         // v-bind:attr=xxx	v-on:emiterName  ==> emiterName={(new) => this.setState({xxx:new})
         const _var = t.JSXIdentifier(camelName(`update:${keys[0]}`, ':'));
         const _varible = t.identifier('_new');
-        const _block = t.callExpression(
-          t.memberExpression(t.thisExpression(), t.identifier('setState')),
-          [
-            t.objectExpression([
-              t.objectProperty(t.identifier(keys[0]), _varible)
-            ])
-          ]
-        );
-        const _val = t.jSXExpressionContainer(
-          t.arrowFunctionExpression([_varible], _block)
-        );
+        const _block = t.callExpression(t.memberExpression(t.thisExpression(), t.identifier('setState')), [
+          t.objectExpression([t.objectProperty(t.identifier(keys[0]), _varible)]),
+        ]);
+        const _val = t.jSXExpressionContainer(t.arrowFunctionExpression([_varible], _block));
         _attrs.push(t.jsxAttribute(_var, _val));
       }
     } else if (key === 'v-model') {
       // 改为value = xxx onInput={e => this.setState({xxx:e.target.value|checked})}
       const varible = t.JSXIdentifier('value');
       const attrVal = t.jSXExpressionContainer(
-        t.memberExpression(
-          t.memberExpression(t.thisExpression(), t.identifier('state')),
-          t.identifier(value)
-        )
+        t.memberExpression(t.memberExpression(t.thisExpression(), t.identifier('state')), t.identifier(value))
       );
       _attrs.push(t.jsxAttribute(varible, attrVal));
 
       // 处理onInput
       const inputKey = t.JSXIdentifier('onInput');
       const _varible =
-        tagName === 'input' &&
-        attrs.some(({ key, value }) => key === 'type' && value === 'checkbox')
+        tagName === 'input' && attrs.some(({ key, value }) => key === 'type' && value === 'checkbox')
           ? t.identifier('e.target.checked')
           : t.identifier('e.target.value');
-      const _block = t.callExpression(
-        t.memberExpression(t.thisExpression(), t.identifier('setState')),
-        [t.objectExpression([t.objectProperty(t.identifier(value), _varible)])]
-      );
-      const _val = t.jSXExpressionContainer(
-        t.arrowFunctionExpression([t.identifier('e')], _block)
-      );
+      const _block = t.callExpression(t.memberExpression(t.thisExpression(), t.identifier('setState')), [
+        t.objectExpression([t.objectProperty(t.identifier(value), _varible)]),
+      ]);
+      const _val = t.jSXExpressionContainer(t.arrowFunctionExpression([t.identifier('e')], _block));
       _attrs.push(t.jsxAttribute(inputKey, _val));
     } else if (key === 'v-text') {
       const content = t.jsxExpressionContainer(handleExpression(state, value));
       child.push(content);
     } else if (key === 'v-html') {
       const varible = t.jSXIdentifier('dangerouslySetInnerHTML');
-      const attrVal = t.jSXExpressionContainer(
-        t.objectExpression([
-          t.objectProperty(
-            t.identifier('__html'),
-            handleExpression(state, value)
-          )
-        ])
-      );
+      const attrVal = t.jSXExpressionContainer(t.objectExpression([t.objectProperty(t.identifier('__html'), handleExpression(state, value))]));
       _attrs.push(t.jsxAttribute(varible, attrVal));
     } else if (key === 'ref') {
       // ref='dom' => ref={dom => this.dom = dom}
@@ -168,12 +120,7 @@ function handleAttrValue(tagName, attrList, state, child) {
       const varible = t.JSXIdentifier(key);
       const left = t.memberExpression(t.thisExpression(), t.identifier(value));
       const right = t.identifier('_dom');
-      const attrVal = t.jsxExpressionContainer(
-        t.arrowFunctionExpression(
-          [t.identifier('_dom')],
-          t.assignmentExpression('=', left, right)
-        )
-      );
+      const attrVal = t.jsxExpressionContainer(t.arrowFunctionExpression([t.identifier('_dom')], t.assignmentExpression('=', left, right)));
       _attrs.push(t.jsxAttribute(varible, attrVal));
     } else {
       _attrs.push(t.jsxAttribute(t.JSXIdentifier(key), t.stringLiteral(value)));
@@ -194,30 +141,18 @@ function generateOneEle(ast, state) {
     // 处理slot标签
     const slotName = ast.attrsMap.name;
     const _child = t.jSXExpressionContainer(
-      t.memberExpression(
-        t.memberExpression(t.thisExpression(), t.identifier('props')),
-        t.identifier(slotName ? slotName : 'children')
-      )
+      t.memberExpression(t.memberExpression(t.thisExpression(), t.identifier('props')), t.identifier(slotName ? slotName : 'children'))
     );
     _child.dom = null;
     return _child;
   }
 
-  const openingElement = t.jsxOpeningElement(
-    t.JSXIdentifier(parseName(ast.tag)),
-    handleAttrValue(ast.tag, attrs, state, child),
-    false
-  );
+  const openingElement = t.jsxOpeningElement(t.JSXIdentifier(parseName(ast.tag)), handleAttrValue(ast.tag, attrs, state, child), false);
   const closeElement = t.jsxClosingElement(t.JSXIdentifier(parseName(ast.tag)));
   const dom = t.jsxElement(openingElement, closeElement, child);
   if (vForItem && (isVif || vShowItem)) {
     //v-for、  v-if|v-show同时存在
-    const exp =
-      isVif && vShowItem
-        ? `${isVif && vShowItem.value}`
-        : isVif
-        ? isVif
-        : vShowItem.value;
+    const exp = isVif && vShowItem ? `${isVif && vShowItem.value}` : isVif ? isVif : vShowItem.value;
     const _child = handleForDirective(vForItem.value, dom, state, exp);
     _child.dom = dom;
     return _child;
@@ -235,13 +170,7 @@ function generateOneEle(ast, state) {
         _child = t.ifStatement(handleExpression(state, vShowItem.value), body);
       } else {
         // v-show 特殊处理为{condotion && <dom/>}
-        _child = t.jSXExpressionContainer(
-          t.logicalExpression(
-            '&&',
-            handleExpression(state, vShowItem.value),
-            dom
-          )
-        );
+        _child = t.jSXExpressionContainer(t.logicalExpression('&&', handleExpression(state, vShowItem.value), dom));
       }
       _child.dom = dom;
       return _child;
@@ -260,20 +189,12 @@ function generateIfState(origin, state, i = 0) {
   const cur = origin[i];
   if (!origin[i]) return null;
   const { exp, block } = cur;
-  const body = t.blockStatement([
-    t.returnStatement(generateJSXElement(block, null, state, true))
-  ]);
+  const body = t.blockStatement([t.returnStatement(generateJSXElement(block, null, state, true))]);
   if (!exp) {
-    const alter = t.blockStatement([
-      t.returnStatement(generateJSXElement(block, null, state, true))
-    ]);
+    const alter = t.blockStatement([t.returnStatement(generateJSXElement(block, null, state, true))]);
     return alter;
   }
-  return t.ifStatement(
-    handleExpression(state, exp),
-    body,
-    generateIfState(origin, state, ++i)
-  );
+  return t.ifStatement(handleExpression(state, exp), body, generateIfState(origin, state, ++i));
 }
 
 /**
@@ -326,9 +247,7 @@ function generateConditionEle(origin, parent, state) {
       )
     );
   } else {
-    child = t.jSXExpressionContainer(
-      generateConditionalExpression(origin, state)
-    );
+    child = t.jSXExpressionContainer(generateConditionalExpression(origin, state));
   }
   return child;
 }
@@ -349,11 +268,7 @@ function generateJSXElement(ast, parent, state, isNoChild) {
         return generateIfState(ast.ifConditions, state);
       } else {
         // 非根节点的条件语句使用{ condition ?  <dom /> : <dom /> }
-        const expression = generateConditionEle(
-          ast.ifConditions,
-          parent,
-          state
-        );
+        const expression = generateConditionEle(ast.ifConditions, parent, state);
         parent.children.push(expression);
         return parent;
       }
@@ -365,9 +280,7 @@ function generateJSXElement(ast, parent, state, isNoChild) {
         const next = t.isJSXElement(nextParent) ? nextParent : nextParent.dom;
         ast.children.map(o => {
           const isNochild =
-            o.attrsList &&
-            o.attrsList.some(({ key }) => key === 'v-for') &&
-            (o.attrsList.some(({ key }) => key === 'v-show') || o.ifConditions);
+            o.attrsList && o.attrsList.some(({ key }) => key === 'v-for') && (o.attrsList.some(({ key }) => key === 'v-show') || o.ifConditions);
           generateJSXElement(o, next, state, isNochild);
         });
       }
@@ -380,9 +293,7 @@ function generateJSXElement(ast, parent, state, isNoChild) {
         if (typeof o === 'string') {
           parent.children.push(t.jsxText(o));
         } else if (typeof o === 'object' && o['@binding']) {
-          const container = t.jsxExpressionContainer(
-            handleExpression(state, o['@binding'])
-          );
+          const container = t.jsxExpressionContainer(handleExpression(state, o['@binding']));
           parent.children.push(container);
         }
       });

@@ -3,7 +3,7 @@
 ## vue-to-react-tool
 
 ### Getting started
-
+#### for node
 ```bash
 # install
 $ sudo tnpm install vue-to-react-tool -g
@@ -21,6 +21,16 @@ Options:
 	-m, --module   use cssModule(styles.***),default is global mode(\"class-name\")
 	-t, --ts       it is a typescript component
 	-h, --help     output usage information
+```
+#### for browser
+
+```bash
+$ npm install vue-to-react-tool -S
+```
+```javascipt
+import transformer from 'vue-to-react-tool'
+
+transformer(content:string, opts:Opts) // Opts = { isTs:boolean } isTs源文件是否使用了typescript
 ```
 
 ### 说明
