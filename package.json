@@ -2,7 +2,7 @@
   "name": "vue-to-react-tool",
   "version": "0.1.6",
   "description": "transform Vue Components to React",
-  "main": "lib/main.js",
+  "main": "lib/index.js",
   "scripts": {
     "demo": "BABEL_DISABLE_CACHE=1 node src/debug.js",
     "build": "BABEL_DISABLE_CACHE=1 node scripts/build.js",
