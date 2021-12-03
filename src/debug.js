@@ -14,4 +14,6 @@ const input = resolve(process.cwd(), 'demo/demo.vue');
 // trans(input, output, { isTs: true });
 
 const content = fs.readFileSync(input);
-trans.transformContent(content.toString());
+const res = trans.transformContent(content.toString());
+console.log(res.jsx)
+console.log(res.css)
