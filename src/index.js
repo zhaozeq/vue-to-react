@@ -1,9 +1,7 @@
 import { dirname, resolve } from 'path';
 import helper from './doc/helper';
-import transform, { transformContent } from './transform';
 import chalk from 'chalk';
 
-export default transformContent;
 
 process.env.HOME_DIR = dirname(require.resolve('../package'));
 
