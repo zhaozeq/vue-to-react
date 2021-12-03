@@ -90,10 +90,10 @@ function transform(input, output, options) {
     process.exit();
   }
   if (statSync(input).isFile()) output = output + '.js';
-  if (existsSync(output)) {
-    log('当前路径存在同名文件！,请重试');
-    process.exit();
-  }
+  // if (existsSync(output)) {
+  //   log('当前路径存在同名文件！,请重试');
+  //   process.exit();
+  // }
   if (statSync(input).isFile()) {
     // 单个文件时
     solveSingleFile(input, output, { isTs }, failedList);
