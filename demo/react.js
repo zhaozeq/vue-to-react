@@ -4,6 +4,7 @@ import "./your.less";
 export default class TestSfc extends Component {
   constructor(props) {
     super(props);
+
     const now = Date.now();
     this.state = {
       list: [1, 2, 3],
