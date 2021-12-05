@@ -28,7 +28,7 @@ Options:
 $ npm install vue-to-react-tool -S
 ```
 ```javascipt
-import transformer from 'vue-to-react-tool/lib/transform'
+import transformer from 'vue-to-react-tool/lib/transform/transform'
 
 transformer(content:string, opts:Opts) // Opts = { isTs:boolean } isTs源文件是否使用了typescript
 ```
