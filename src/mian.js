@@ -1,3 +1,3 @@
-import { transformContent } from './transform';
+import transform from './transform/transform';
 
-export default transformContent;
+export default transform;
